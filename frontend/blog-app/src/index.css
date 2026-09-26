@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Poppins:wght@400;500&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Urbanist", "sans-serif";
+  --breakpoint-3xl: 1920px;
+
+  /* Aapka Custom Color Palette */
+  --color-brand-dark: #384959;
+  --color-brand-steel: #6A89A7;
+  --color-brand-accent: #88BDF2;
+  --color-brand-light: #BDDDFC;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-display);
+    color: #384959;
+  }
+
+  body {
+    background-color: #f6f9fc; /* Soft tinted neutral taaki elements pop karein */
+    overflow-x: hidden;
+  }
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #6A89A7;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Reusable Components */
+.input-box {
+  @apply w-full flex justify-between gap-3 text-sm text-[#384959] bg-white rounded-xl px-4 py-3 mb-4 mt-2 border border-[#BDDDFC] outline-none focus-within:border-[#88BDF2] focus-within:ring-2 focus-within:ring-[#BDDDFC]/40 transition-all;
+}
+
+.btn-primary {
+  @apply w-full flex items-center justify-center gap-3 text-sm font-semibold text-white bg-[#88BDF2] hover:bg-[#6A89A7] p-[11px] rounded-xl transition-all hover:scale-[1.01] shadow-md shadow-[#88BDF2]/30 cursor-pointer;
+}
+
+.btn-secondary {
+  @apply flex items-center justify-center gap-2 bg-[#BDDDFC]/40 text-[#384959] hover:bg-[#88BDF2] hover:text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-all cursor-pointer;
+}
+
+.form-card {
+  @apply bg-white rounded-2xl shadow-xl shadow-[#6A89A7]/10 border border-[#BDDDFC]/50 p-6;
+}
