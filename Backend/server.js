@@ -30,9 +30,10 @@ app.use(express.json());
 //Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", blogPostRoutes);
-// app.use("./api/comment", commentRoutes);
-// app.use("./api/dashboard-summary", dashboardRoutes);
-// app.use("./api/ai", aiRoutes);
+app.use("/api/comments", commentRoutes);
+app.use("/api/dashboard-summary", dashboardRoutes);
+
+app.use("/api/ai", aiRoutes);
 
 //Serve upload folder
 app.use("/uploads", express.static(path.join(__dirname, "uploads"), {}));

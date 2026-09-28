@@ -65,6 +65,11 @@ const updatePost = async (req, res) => {
 
 const deletePost = async (req, res) => {
   try {
+    const post = await BlogPost.findById(req.params.id);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    await post.deleteOne();
+    res.json({ message: "Post deleted" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -72,48 +77,116 @@ const deletePost = async (req, res) => {
 
 const getAllPosts = async (req, res) => {
   try {
+    const status = req.query.status || "published";
+    const page = parseInt(req.query.page) || 1;
+    const limit = 5;
+    const skip = (page - 1) * limit;
+
+    let filter = {};
+    if (status === "published") filter.isDraft = false;
+    else if (status === "draft") filter.isDraft = true;
+
+    const posts = await BlogPost.find(filter)
+      .populate("author", "name profileImageUrl")
+      .sort({ updatedAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const [totalCount, allCount, publishedCount, draftCount] =
+      await Promise.all([
+        BlogPost.countDocuments(filter),
+        BlogPost.countDocuments(),
+        BlogPost.countDocuments({ isDraft: false }),
+        BlogPost.countDocuments({ isDraft: true }),
+      ]);
+
+    res.json({
+      posts,
+      page,
+      totalPages: Math.ceil(totalCount / limit),
+      totalCount,
+      counts: {
+        all: allCount,
+        published: publishedCount,
+        draft: draftCount,
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
+//@routes  GET /api/posts/:slug
 const getPostBySlug = async (req, res) => {
   try {
+    const post = await BlogPost.findOne({ slug: req.params.slug }).populate(
+      "author",
+      "name profileImageUrl",
+    );
+    if (!post) return res.status(404).json({ message: "Post not found" });
+    res.json(post);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
+//@routes GET /api/posts/tag/:tag
 const getPostByTag = async (req, res) => {
   try {
+    const posts = await BlogPost.find({
+      tags: req.params.tag || req.params.tags,
+      isDraft: false,
+    }).populate("author", "name profileImageUrl");
+    res.json(posts);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
+//@routes GET /api/posts/search?q-keyword
 const searchPosts = async (req, res) => {
   try {
+    const q = req.query.q;
+    const posts = await BlogPost.find({
+      isDraft: false,
+      $or: [
+        { title: { $regex: q, $options: "i" } },
+        { content: { $regex: q, $options: "i" } },
+      ],
+    }).populate("author", "name profileImageUrl");
+    res.json(posts);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
+//@routes GET /api/posts/:id/view
 const incrementView = async (req, res) => {
   try {
+    await BlogPost.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } });
+    res.json({ message: "View count increment" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
+// @routes  PUt /api/posts/:id/like
 const likePost = async (req, res) => {
   try {
+    await BlogPost.findByIdAndUpdate(req.params.id, { $inc: { likes: 1 } });
+    res.json({ message: "Like added" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
+// @routes  GET  /api/posts/trending
 const getTopPosts = async (req, res) => {
   try {
+    const posts = await BlogPost.find({ isDraft: false })
+      .sort({ views: -1, likes: -1 })
+      .limit(5);
+    res.json(posts);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
