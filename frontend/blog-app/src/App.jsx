@@ -5,46 +5,49 @@ import BlogLoadingPage from './pages/Blog/components/BlogLoadingPage'
 import BlogPostView from './pages/Blog/components/BlogPostView'
 import PostBytags from './pages/Blog/components/PostBytags'
 import SearchPosts from './pages/Blog/components/SearchPosts'
-import AdminLogin from './pages/Admin/components/adminLogin'
+import AdminLogin from './pages/Admin/components/AdminLogin'
 import PrivateRoutes from './routes/PrivateRoutes'
 import Dashboard from './pages/Admin/components/Dashboard'
 import BlogPost from './pages/Admin/components/BlogPost'
 import BlogPostEditor from './pages/Admin/components/BlogPostEditor'
+import UserProvider from './context/userContext'
 
 const App = () => {
  return (
-  <div>
-   <Router>
-    <Routes>
-     {/* Default Routes */}
-     <Route path='/' element={<BlogLoadingPage />} />
-     <Route path='/:slug' element={<BlogPostView />} />
-     <Route path='/tag/:tagName' element={<PostBytags />} />
-     <Route path='/search' element={<SearchPosts />} />
+  <UserProvider>
+   <div>
+    <Router>
+     <Routes>
+      {/* 1. Static Public Routes */}
+      <Route path='/' element={<BlogLoadingPage />} />
+      <Route path='/admin-login' element={<AdminLogin />} />
+      <Route path='/search' element={<SearchPosts />} />
+      <Route path='/tag/:tagName' element={<PostBytags />} />
 
-     {/* Admin Routes */}
-     <Route element={<PrivateRoutes allowedRoute={["admin"]} />}>
-      <Route path='/admin/dashboard' element={<Dashboard />} />
-      <Route path='/admin/posts' element={<BlogPost />} />
-      <Route path='/admin/create' element={<BlogPostEditor />} />
-      <Route path='/admin/edit/:postSlug' element={<BlogPostEditor isEdit={true} />} />
-      <Route path='/admin/comments' element={<AdminLogin />} />
-     </Route>
+      {/* 2. Admin Protected Routes */}
+      <Route element={<PrivateRoutes allowedRoute={["admin"]} />}>
+       <Route path='/admin/dashboard' element={<Dashboard />} />
+       <Route path='/admin/posts' element={<BlogPost />} />
+       <Route path='/admin/create' element={<BlogPostEditor />} />
+       <Route path='/admin/edit/:postSlug' element={<BlogPostEditor isEdit={true} />} />
+       <Route path='/admin/comments' element={<AdminLogin />} />
+      </Route>
 
-     <Route path='/admin-login' element={<AdminLogin />} />
+      {/* 3. Dynamic / Wildcard Route ko sabse last me rakhein */}
+      <Route path='/:slug' element={<BlogPostView />} />
+     </Routes>
+    </Router>
 
-    </Routes>
-   </Router>
-   <Toaster
-    toastOptions={{
-     className: "",
-     style: {
-      fontSize: "13px",
-     },
-    }}
-   />
-
-  </div>
+    <Toaster
+     toastOptions={{
+      className: "",
+      style: {
+       fontSize: "13px",
+      },
+     }}
+    />
+   </div>
+  </UserProvider>
  )
 }
 
