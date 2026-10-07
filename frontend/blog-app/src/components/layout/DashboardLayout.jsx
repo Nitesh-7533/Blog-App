@@ -2,7 +2,7 @@ import React from 'react'
 
 const DashboardLayout = () => {
  return (
-  <div>DashboardLayoutehwuhuiwhih</div>
+  <div>DashboardLayout</div>
  )
 }
 

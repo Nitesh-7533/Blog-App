@@ -35,7 +35,7 @@ const BlogNavbar = ({ activeMenu }) => {
        <img
         src={Logo}
         alt='logo'
-        className='h-10 md:h-20 w-auto object-contain cursor-pointer'
+        className='h-8 md:h-20 pl-8 w-auto object-contain cursor-pointer'
        />
       </Link>
      </div>

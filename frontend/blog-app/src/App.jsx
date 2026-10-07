@@ -11,6 +11,7 @@ import Dashboard from './pages/Admin/components/Dashboard'
 import BlogPost from './pages/Admin/components/BlogPost'
 import BlogPostEditor from './pages/Admin/components/BlogPostEditor'
 import UserProvider from './context/userContext'
+import Comment from './pages/Admin/components/Comment'
 
 const App = () => {
  return (
@@ -30,7 +31,7 @@ const App = () => {
        <Route path='/admin/posts' element={<BlogPost />} />
        <Route path='/admin/create' element={<BlogPostEditor />} />
        <Route path='/admin/edit/:postSlug' element={<BlogPostEditor isEdit={true} />} />
-       <Route path='/admin/comments' element={<AdminLogin />} />
+       <Route path='/admin/comments' element={<Comment />} />
       </Route>
 
       {/* 3. Dynamic / Wildcard Route ko sabse last me rakhein */}

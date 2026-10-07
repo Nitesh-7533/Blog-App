@@ -44,7 +44,7 @@
 }
 
 .btn-primary {
-  @apply w-full flex items-center justify-center gap-3 text-sm font-semibold text-white bg-[#88BDF2] hover:bg-[#6A89A7] p-[11px] rounded-xl transition-all hover:scale-[1.01] shadow-md shadow-[#88BDF2]/30 cursor-pointer;
+  @apply w-full flex items-center justify-center gap-3 text-sm font-semibold text-white bg-[#2678ca] hover:bg-[#1095e3] p-[11px] rounded-xl transition-all hover:scale-[1.01] shadow-md shadow-[#88BDF2]/30 cursor-pointer;
 }
 
 .btn-secondary {
