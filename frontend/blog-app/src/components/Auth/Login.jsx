@@ -36,26 +36,30 @@ const Login = ({ setCurrentPage }) => {
    const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, {
     email,
     password,
-   })
+   });
 
-   const { token, role } = response.data;
+   // Agar backend role direct response.data mein deta hai ya user object ke andar:
+   const token = response.data?.token;
+   const role = response.data?.role || response.data?.user?.role;
 
    if (token) {
     localStorage.setItem("token", token);
-    updateUser(response.data)
+    updateUser(response.data);
+    setOpenAuthForm(false);
 
-    //Redirect based on role
+    // Redirect based on role
     if (role === "admin") {
-     setOpenAuthForm(false)
      navigate("/admin/dashboard");
+    } else {
+     navigate("/");
     }
-    setOpenAuthForm(false)
    }
   } catch (error) {
-   if (error.response && error.response.date, message) {
-    setError(error.response.date.message);
+   // Corrected typo from .date to .data and fixed syntax error
+   if (error.response && error.response.data && error.response.data.message) {
+    setError(error.response.data.message);
    } else {
-    setError("Something went wrong.Please try again.");
+    setError("Something went wrong. Please try again.");
    }
   }
  };

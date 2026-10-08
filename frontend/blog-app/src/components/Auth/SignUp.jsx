@@ -8,6 +8,7 @@ import AUTH_IMg from "../../assets/AUTH_IMG.jpg"
 import Input from '../Inputs/Input'
 import { validateEmail } from '../../utils/helper'
 import ProfilePhotoSelector from '../Inputs/ProfilePhotoSelector'
+import uploadimage from "../../utils/uploadimage"
 
 const SignUp = ({ setCurrentPage }) => {
  const [profilePic, setProfilePic] = useState(null);
@@ -44,12 +45,42 @@ const SignUp = ({ setCurrentPage }) => {
 
   //Signup API call
   try {
-   //Upload Images if present
+   // Upload Image if present
+   if (profilePic) {
+    const imgUploadRes = await uploadimage(profilePic);
+    profileImageUrl = imgUploadRes.imageUrl || "";
+   }
+
+   const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
+    name: fullname,
+    email,
+    password,
+    profileImageUrl,
+    adminAccessToken,
+   });
+
+   // Extract token & role correctly (handling nested user object)
+   const token = response.data?.token;
+   const role = response.data?.role || response.data?.user?.role;
+
+   if (token) {
+    localStorage.setItem("token", token);
+    updateUser(response.data);
+    if (setOpenAuthForm) setOpenAuthForm(false);
+
+    // If admin token/invite code was used and role is admin
+    if (role === "admin") {
+     navigate("/admin/dashboard");
+    } else {
+     navigate("/");
+    }
+   }
   } catch (error) {
-   if (error.response && error.response.date.message) {
-    setError(error.response.date.message);
+   // Fixed typo from .date to .data
+   if (error.response && error.response.data && error.response.data.message) {
+    setError(error.response.data.message);
    } else {
-    setError("Something went wrong. Please try again.")
+    setError("Something went wrong. Please try again.");
    }
   }
  }
